@@ -77,7 +77,7 @@ export default async function ClientDashboard() {
         {/* Unread notifications */}
         {notifications.length > 0 && (
           <div className="mb-6 space-y-2">
-            {notifications.map((notif) => (
+            {notifications.map((notif: (typeof notifications)[number]) => (
               <div key={notif.id} className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <div className="w-2 h-2 bg-[#1A4A8A] rounded-full mt-2 shrink-0" />
                 <div>
@@ -163,7 +163,7 @@ export default async function ClientDashboard() {
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
-                    {orders.map((order) => (
+                    {orders.map((order: (typeof orders)[number]) => (
                       <Link key={order.id} href={`/dashboard/client/orders/${order.id}`}>
                         <div className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
                           <div className="flex items-start justify-between gap-3">

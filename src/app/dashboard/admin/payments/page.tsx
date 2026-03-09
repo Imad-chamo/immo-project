@@ -77,7 +77,7 @@ export default async function AdminPaymentsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {pendingPayments.map((order) => (
+                    {pendingPayments.map((order: (typeof pendingPayments)[number]) => (
                       <tr key={order.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3 font-mono text-[#1A4A8A] font-bold text-xs">
                           IVM-{order.id.slice(-8).toUpperCase()}
@@ -131,7 +131,7 @@ export default async function AdminPaymentsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {recentSubscriptions.map((sub) => (
+                    {recentSubscriptions.map((sub: (typeof recentSubscriptions)[number]) => (
                       <tr key={sub.id}>
                         <td className="px-4 py-3">
                           <p className="font-medium">{sub.inspector.user.name}</p>
@@ -168,7 +168,7 @@ export default async function AdminPaymentsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {inspectorPayouts.map((order) => (
+                  {inspectorPayouts.map((order: (typeof inspectorPayouts)[number]) => (
                     <tr key={order.id}>
                       <td className="px-4 py-3 font-mono text-[#1A4A8A] text-xs font-bold">
                         IVM-{order.id.slice(-8).toUpperCase()}

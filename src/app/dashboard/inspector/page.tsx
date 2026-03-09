@@ -128,7 +128,7 @@ export default async function InspectorDashboard() {
         {/* Notifications */}
         {notifications.length > 0 && (
           <div className="mb-6 space-y-2">
-            {notifications.map((n) => (
+            {notifications.map((n: (typeof notifications)[number]) => (
               <div key={n.id} className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <div className="w-2 h-2 bg-[#1A4A8A] rounded-full mt-2 shrink-0" />
                 <div>
@@ -218,7 +218,7 @@ export default async function InspectorDashboard() {
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
-                    {missions.slice(0, 6).map((mission) => (
+                    {missions.slice(0, 6).map((mission: (typeof missions)[number]) => (
                       <Link key={mission.id} href={`/dashboard/inspector/missions/${mission.id}`}>
                         <div className="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
                           <div className="flex items-start justify-between gap-3">
@@ -319,7 +319,7 @@ export default async function InspectorDashboard() {
                   </p>
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {profile.cities.map((city) => (
+                    {profile.cities.map((city: string) => (
                       <span key={city} className="inline-flex items-center gap-1 bg-[#1A4A8A]/10 text-[#1A4A8A] text-xs px-2 py-1 rounded-full">
                         <MapPin className="h-3 w-3" />
                         {city}

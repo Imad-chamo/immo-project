@@ -216,7 +216,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                     <div className="mt-3">
                       <p className="text-xs text-gray-500 mb-2">{order.report.photos.length} photos</p>
                       <div className="grid grid-cols-4 gap-2">
-                        {order.report.photos.slice(0, 8).map((url, i) => (
+                        {order.report.photos.slice(0, 8).map((url: string, i: number) => (
                           <img key={i} src={url} alt="" className="w-full aspect-square object-cover rounded-lg" />
                         ))}
                       </div>
@@ -241,7 +241,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {cashLogs.map((log) => (
+                    {cashLogs.map((log: (typeof cashLogs)[number]) => (
                       <div key={log.id} className="flex items-center gap-3 text-sm">
                         <div className="w-2 h-2 bg-gray-400 rounded-full" />
                         <span className="text-gray-600">{formatDateTime(log.createdAt)}</span>
@@ -269,7 +269,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                 reportId: order.report?.id,
                 reportStatus: order.report?.status,
               }}
-              availableInspectors={availableInspectors.map((p) => ({
+              availableInspectors={availableInspectors.map((p: (typeof availableInspectors)[number]) => ({
                 id: p.userId,
                 name: p.user.name || "",
                 badge: p.badge,

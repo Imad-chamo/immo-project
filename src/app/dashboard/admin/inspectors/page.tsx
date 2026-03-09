@@ -67,7 +67,7 @@ export default async function AdminInspectorsPage({
         </div>
 
         <div className="space-y-4">
-          {profiles.map((profile) => (
+          {profiles.map((profile: (typeof profiles)[number]) => (
             <Card key={profile.id} className={!profile.isApproved ? "border-amber-200 bg-amber-50" : ""}>
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-4">
@@ -108,7 +108,7 @@ export default async function AdminInspectorsPage({
 
                       {profile.cities.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">
-                          {profile.cities.map((city) => (
+                          {profile.cities.map((city: string) => (
                             <span key={city} className="inline-flex items-center gap-1 bg-[#1A4A8A]/10 text-[#1A4A8A] text-xs px-2 py-0.5 rounded-full">
                               <MapPin className="h-2.5 w-2.5" />
                               {city}

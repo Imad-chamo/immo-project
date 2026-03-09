@@ -221,7 +221,7 @@ export default async function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {recentOrders.map((order) => (
+                  {recentOrders.map((order: (typeof recentOrders)[number]) => (
                     <tr key={order.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 font-mono font-bold text-[#1A4A8A]">
                         IVM-{order.id.slice(-8).toUpperCase()}

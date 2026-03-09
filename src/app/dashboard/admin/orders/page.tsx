@@ -121,7 +121,7 @@ export default async function AdminOrdersPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {orders.map((order) => (
+                {orders.map((order: (typeof orders)[number]) => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-mono font-bold text-[#1A4A8A] text-xs">
                       IVM-{order.id.slice(-8).toUpperCase()}

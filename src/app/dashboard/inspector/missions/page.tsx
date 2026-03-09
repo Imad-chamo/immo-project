@@ -98,7 +98,7 @@ export default async function InspectorMissionsPage() {
         </Card>
       ) : (
         <div className="space-y-4">
-          {orders.map((order) => (
+          {orders.map((order: (typeof orders)[number]) => (
             <Card key={order.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
