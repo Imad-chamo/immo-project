@@ -51,8 +51,8 @@ export default async function ClientDashboard() {
     select: { referralCode: true, name: true },
   });
 
-  const totalCredits = credits.reduce((sum, c) => sum + c.amount, 0);
-  const deliveredOrders = orders.filter((o) => o.status === "DELIVERED").length;
+  const totalCredits = credits.reduce((sum: number, c: (typeof credits)[number]) => sum + c.amount, 0);
+  const deliveredOrders = orders.filter((o: (typeof orders)[number]) => o.status === "DELIVERED").length;
   const referralLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/register?ref=${user?.referralCode}`;
 
   return (

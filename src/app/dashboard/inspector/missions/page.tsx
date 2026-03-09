@@ -51,9 +51,9 @@ export default async function InspectorMissionsPage() {
 
   const stats = {
     total: orders.length,
-    active: orders.filter((o) => ["ASSIGNED", "IN_PROGRESS"].includes(o.status)).length,
-    pending_review: orders.filter((o) => o.status === "QUALITY_CHECK").length,
-    delivered: orders.filter((o) => o.status === "DELIVERED").length,
+    active: orders.filter((o: (typeof orders)[number]) => ["ASSIGNED", "IN_PROGRESS"].includes(o.status)).length,
+    pending_review: orders.filter((o: (typeof orders)[number]) => o.status === "QUALITY_CHECK").length,
+    delivered: orders.filter((o: (typeof orders)[number]) => o.status === "DELIVERED").length,
   };
 
   return (

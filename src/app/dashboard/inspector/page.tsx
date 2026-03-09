@@ -52,10 +52,10 @@ export default async function InspectorDashboard() {
     }),
   ]);
 
-  const activeMissions = missions.filter((m) => ["ASSIGNED", "IN_PROGRESS"].includes(m.status));
-  const completedMissions = missions.filter((m) => m.status === "DELIVERED");
+  const activeMissions = missions.filter((m: (typeof missions)[number]) => ["ASSIGNED", "IN_PROGRESS"].includes(m.status));
+  const completedMissions = missions.filter((m: (typeof missions)[number]) => m.status === "DELIVERED");
   const monthlyEarnings = completedMissions
-    .filter((m) => {
+    .filter((m: (typeof completedMissions)[number]) => {
       const d = new Date(m.createdAt);
       const now = new Date();
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();

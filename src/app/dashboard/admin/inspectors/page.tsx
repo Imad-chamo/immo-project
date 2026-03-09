@@ -32,7 +32,7 @@ export default async function AdminInspectorsPage({
     orderBy: { createdAt: "desc" },
   });
 
-  const pendingCount = profiles.filter((p) => !p.isApproved).length;
+  const pendingCount = profiles.filter((p: (typeof profiles)[number]) => !p.isApproved).length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -61,7 +61,7 @@ export default async function AdminInspectorsPage({
           </Link>
           <Link href="/dashboard/admin/inspectors?status=active">
             <Button variant={params.status === "active" ? "default" : "outline"} size="sm">
-              Actifs ({profiles.filter((p) => p.isApproved).length})
+              Actifs ({profiles.filter((p: (typeof profiles)[number]) => p.isApproved).length})
             </Button>
           </Link>
         </div>
