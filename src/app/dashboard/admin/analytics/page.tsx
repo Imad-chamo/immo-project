@@ -68,7 +68,7 @@ export default async function AdminAnalyticsPage() {
     orderBy: { _count: { propertyCity: "desc" } },
     take: 10,
   });
-  const cities: CityRow[] = rawCities.map((r) => ({
+  const cities: CityRow[] = (rawCities as { propertyCity: string; _count: number; _sum: { clientPrice: number | null } }[]).map((r) => ({
     city: r.propertyCity,
     count: r._count,
     revenue: r._sum.clientPrice ?? 0,
@@ -81,7 +81,7 @@ export default async function AdminAnalyticsPage() {
     take: 10,
     include: { user: { select: { name: true } } },
   });
-  const inspectors: InspectorRow[] = rawInspectors.map((r) => ({
+  const inspectors: InspectorRow[] = (rawInspectors as { id: string; badge: string; totalMissions: number; rating: number; user: { name: string | null } }[]).map((r) => ({
     id: r.id,
     name: r.user.name ?? "Inconnu",
     badge: r.badge,
@@ -96,7 +96,7 @@ export default async function AdminAnalyticsPage() {
     _count: true,
     _sum: { clientPrice: true },
   });
-  const formulas: FormulaRow[] = rawFormulas.map((r) => ({
+  const formulas: FormulaRow[] = (rawFormulas as { formula: string; _count: number; _sum: { clientPrice: number | null } }[]).map((r) => ({
     formula: r.formula,
     count: r._count,
     revenue: r._sum.clientPrice ?? 0,
