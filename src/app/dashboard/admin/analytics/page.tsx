@@ -6,7 +6,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatMAD } from "@/lib/utils";
 import RevenueChart from "./RevenueChart";
 
-type CityRow = { propertyCity: string; _count: number; _sum: { clientPrice: number | null } };
+interface CityRow {
+  city: string;
+  count: number;
+  revenue: number;
+}
+
+interface InspectorRow {
+  id: string;
+  name: string;
+  badge: string;
+  missions: number;
+  rating: number;
+}
+
+interface FormulaRow {
+  formula: string;
+  count: number;
+  revenue: number;
+}
 
 export default async function AdminAnalyticsPage() {
   const session = await auth();
@@ -41,8 +59,8 @@ export default async function AdminAnalyticsPage() {
     });
   }
 
-  // Top cities
-  const rawOrdersByCity = await prisma.order.groupBy({
+  // Top cities — convert to simple typed array immediately
+  const rawCities = await prisma.order.groupBy({
     by: ["propertyCity"],
     where: { paymentStatus: "CONFIRMED" },
     _count: true,
@@ -50,31 +68,44 @@ export default async function AdminAnalyticsPage() {
     orderBy: { _count: { propertyCity: "desc" } },
     take: 10,
   });
-  const ordersByCity: CityRow[] = rawOrdersByCity.map((r) => ({
-    propertyCity: r.propertyCity,
-    _count: r._count,
-    _sum: { clientPrice: r._sum.clientPrice },
+  const cities: CityRow[] = rawCities.map((r) => ({
+    city: r.propertyCity,
+    count: r._count,
+    revenue: r._sum.clientPrice ?? 0,
   }));
 
   // Top inspectors
-  const topInspectors = await prisma.inspectorProfile.findMany({
+  const rawInspectors = await prisma.inspectorProfile.findMany({
     where: { totalMissions: { gt: 0 } },
     orderBy: [{ totalMissions: "desc" }, { rating: "desc" }],
     take: 10,
     include: { user: { select: { name: true } } },
   });
+  const inspectors: InspectorRow[] = rawInspectors.map((r) => ({
+    id: r.id,
+    name: r.user.name ?? "Inconnu",
+    badge: r.badge,
+    missions: r.totalMissions,
+    rating: r.rating,
+  }));
 
   // By formula
-  const byFormula = await prisma.order.groupBy({
+  const rawFormulas = await prisma.order.groupBy({
     by: ["formula"],
     where: { paymentStatus: "CONFIRMED" },
     _count: true,
     _sum: { clientPrice: true },
   });
+  const formulas: FormulaRow[] = rawFormulas.map((r) => ({
+    formula: r.formula,
+    count: r._count,
+    revenue: r._sum.clientPrice ?? 0,
+  }));
 
   const totalRevenue = monthlyData.reduce((s, m) => s + m.inspections, 0);
   const totalSubRevenue = monthlyData.reduce((s, m) => s + m.subscriptions, 0);
   const totalMargin = monthlyData.reduce((s, m) => s + m.margin, 0);
+  const totalFormulaCount = formulas.reduce((s, f) => s + f.count, 0);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -126,17 +157,17 @@ export default async function AdminAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {ordersByCity.map((city, i) => (
-                  <div key={city.propertyCity} className="flex items-center justify-between">
+                {cities.map((row, index) => (
+                  <div key={row.city} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#1A4A8A] text-white text-xs flex items-center justify-center font-bold">
-                        {i + 1}
+                        {index + 1}
                       </span>
-                      <span className="text-sm font-medium">{city.propertyCity}</span>
+                      <span className="text-sm font-medium">{row.city}</span>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-bold">{city._count} commandes</p>
-                      <p className="text-xs text-gray-500">{formatMAD(city._sum.clientPrice || 0)}</p>
+                      <p className="text-sm font-bold">{row.count} commandes</p>
+                      <p className="text-xs text-gray-500">{formatMAD(row.revenue)}</p>
                     </div>
                   </div>
                 ))}
@@ -151,27 +182,26 @@ export default async function AdminAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {byFormula.map((f) => {
-                  const total = byFormula.reduce((s, x) => s + x._count, 0);
-                  const pct = total > 0 ? Math.round((f._count / total) * 100) : 0;
+                {formulas.map((row) => {
+                  const pct = totalFormulaCount > 0 ? Math.round((row.count / totalFormulaCount) * 100) : 0;
                   const colors: Record<string, string> = {
                     ESSENTIEL: "bg-blue-400",
                     STANDARD: "bg-[#1A4A8A]",
                     PREMIUM: "bg-[#B8860B]",
                   };
                   return (
-                    <div key={f.formula}>
+                    <div key={row.formula}>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="font-medium">{f.formula}</span>
-                        <span className="text-gray-600">{f._count} ({pct}%)</span>
+                        <span className="font-medium">{row.formula}</span>
+                        <span className="text-gray-600">{row.count} ({pct}%)</span>
                       </div>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div
-                          className={`h-full rounded-full ${colors[f.formula] || "bg-gray-400"}`}
+                          className={`h-full rounded-full ${colors[row.formula] || "bg-gray-400"}`}
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <p className="text-xs text-gray-500 mt-0.5">{formatMAD(f._sum.clientPrice || 0)}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{formatMAD(row.revenue)}</p>
                     </div>
                   );
                 })}
@@ -186,21 +216,21 @@ export default async function AdminAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {topInspectors.map((inspector, i) => (
-                  <div key={inspector.id} className="flex items-center justify-between">
+                {inspectors.map((row, index) => (
+                  <div key={row.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#B8860B] text-white text-xs flex items-center justify-center font-bold">
-                        {i + 1}
+                        {index + 1}
                       </span>
                       <div>
-                        <p className="text-sm font-medium">{inspector.user.name}</p>
-                        <p className="text-xs text-gray-500">{inspector.badge}</p>
+                        <p className="text-sm font-medium">{row.name}</p>
+                        <p className="text-xs text-gray-500">{row.badge}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-bold">{inspector.totalMissions} missions</p>
+                      <p className="text-sm font-bold">{row.missions} missions</p>
                       <p className="text-xs text-gray-500">
-                        {inspector.rating > 0 ? `⭐ ${inspector.rating.toFixed(1)}` : "Pas de note"}
+                        {row.rating > 0 ? `⭐ ${row.rating.toFixed(1)}` : "Pas de note"}
                       </p>
                     </div>
                   </div>
