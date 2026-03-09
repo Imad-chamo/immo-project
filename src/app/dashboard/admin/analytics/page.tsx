@@ -119,7 +119,7 @@ export default async function AdminAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {ordersByCity.map((city: { propertyCity: string; _count: number; _sum: { clientPrice: number | null } }, i) => (
+                {ordersByCity.map((city: { propertyCity: string; _count: number; _sum: { clientPrice: number | null } }, i: number) => (
                   <div key={city.propertyCity} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#1A4A8A] text-white text-xs flex items-center justify-center font-bold">
