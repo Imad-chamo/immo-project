@@ -42,7 +42,7 @@ export default async function AdminAnalyticsPage() {
   }
 
   // Top cities
-  const ordersByCity = await prisma.order.groupBy({
+  const rawOrdersByCity = await prisma.order.groupBy({
     by: ["propertyCity"],
     where: { paymentStatus: "CONFIRMED" },
     _count: true,
@@ -50,6 +50,11 @@ export default async function AdminAnalyticsPage() {
     orderBy: { _count: { propertyCity: "desc" } },
     take: 10,
   });
+  const ordersByCity: CityRow[] = rawOrdersByCity.map((r) => ({
+    propertyCity: r.propertyCity,
+    _count: r._count,
+    _sum: { clientPrice: r._sum.clientPrice },
+  }));
 
   // Top inspectors
   const topInspectors = await prisma.inspectorProfile.findMany({
@@ -121,7 +126,7 @@ export default async function AdminAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {(ordersByCity as CityRow[]).map((city, i) => (
+                {ordersByCity.map((city, i) => (
                   <div key={city.propertyCity} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#1A4A8A] text-white text-xs flex items-center justify-center font-bold">
