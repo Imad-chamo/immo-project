@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #1A4A8A;
+  --primary-foreground: #ffffff;
+  --accent: #B8860B;
+  --success: #1A6B3A;
 }
 
 @theme inline {
@@ -12,15 +16,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #1A4A8A;
+  border-radius: 3px;
+}
+
+/* RTL support */
+[dir="rtl"] {
+  text-align: right;
 }
