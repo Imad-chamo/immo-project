@@ -1,5 +1,8 @@
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
 import { NextResponse } from "next/server";
+
+const { auth } = NextAuth(authConfig);
 
 const PUBLIC_ROUTES = ["/", "/tarifs", "/a-propos", "/contact", "/auth"];
 const CLIENT_ROUTES = ["/dashboard/client"];
@@ -28,7 +31,6 @@ export default auth((req) => {
 
   const role = session.user?.role;
 
-  // Role-based routing
   if (ADMIN_ROUTES.some((r) => pathname.startsWith(r)) && role !== "ADMIN") {
     return NextResponse.redirect(new URL("/auth/unauthorized", req.url));
   }
